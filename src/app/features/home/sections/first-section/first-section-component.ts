@@ -1,90 +1,107 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { AppConfig } from '../../../../core/config/app.config';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface QuickAccessItem {
-  id: string;
-  icon: string;
-  title: string;
-  route?: string;
-  notificationCount?: number;
-  isActive: boolean;
-}
+import { RouterModule } from '@angular/router';
+import { AppConfig } from '../../../../core/config/app.config';
 
 @Component({
   selector: 'app-first-section-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './first-section-component.html',
   styleUrl: './first-section-component.css',
 })
-export class FirstSectionComponent implements OnInit {
+export class FirstSectionComponent implements AfterViewInit {
   chatOpen = false;
   icons = AppConfig.icons;
   iconTitles = AppConfig.iconTitles;
+  iconRoutes = AppConfig.iconRoutes;
 
-  // Préparation pour l'intégration backend
-  quickAccessItems: QuickAccessItem[] = [];
+  @ViewChild('heroVideo') heroVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('videoContainer') videoContainer!: ElementRef<HTMLDivElement>;
 
-  ngOnInit(): void {
-    this.initializeQuickAccessItems();
+  isPlaying = false;
+  isMuted = true;
+  duration = 0;
+  currentTime = 0;
+  progress = 0;
+  currentTimeDisplay = '0:00';
+  durationDisplay = '0:00';
+  
+
+  ngAfterViewInit(): void {
+    if (typeof window === 'undefined') return;
+
+    const video = this.heroVideo?.nativeElement;
+    if (!video) return;
+
+    video.muted = true;
+    video
+      .play()
+      .then(() => (this.isPlaying = true))
+      .catch((err) => console.warn('Autoplay bloqué:', err));
   }
 
-  /**
-   * Initialise les éléments d'accès rapide
-   * TODO: Remplacer par un appel API backend
-   */
-  private initializeQuickAccessItems(): void {
-    this.quickAccessItems = this.icons.map((icon, index) => ({
-      id: `access-${index}`,
-      icon,
-      title: this.iconTitles[index],
-      route: this.getRouteForItem(index),
-      notificationCount: this.getNotificationCount(index),
-      isActive: true,
-    }));
+  togglePlayPause(event: Event): void {
+    event.stopPropagation();
+    const video = this.heroVideo.nativeElement;
+
+    if (video.paused) {
+      video.play();
+      this.isPlaying = true;
+    } else {
+      video.pause();
+      this.isPlaying = false;
+    }
   }
 
-  /**
-   * Détermine la route pour chaque élément
-   * TODO: Mapper avec les routes réelles de l'application
-   */
-  private getRouteForItem(index: number): string {
-    const routes = ['/menu', '/ressources', '/rh', '/commercial', '/moyens-generaux', '/formation'];
-    return routes[index] || '/';
+  toggleMute(event: Event): void {
+    event.stopPropagation();
+    const video = this.heroVideo.nativeElement;
+
+    this.isMuted = !this.isMuted;
+    video.muted = this.isMuted;
   }
 
-  /**
-   * Récupère le nombre de notifications pour un élément
-   * TODO: Connecter à l'API backend pour les notifications en temps réel
-   */
-  private getNotificationCount(index: number): number | undefined {
-    // Simulation - à remplacer par un appel API
-    const notifications: { [key: number]: number } = {
-      2: 5, // RH
-      4: 2, // Moyens Généraux
-    };
-    return notifications[index];
+  toggleFullscreen(event: Event): void {
+    event.stopPropagation();
+    const container = this.videoContainer.nativeElement;
+
+    if (!document.fullscreenElement) {
+      container.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
   }
 
-  /**
-   * Toggle l'état du chatbot
-   * TODO: Intégrer avec le service de chat backend
-   */
+  onTimeUpdate(): void {
+    const video = this.heroVideo.nativeElement;
+    this.currentTime = video.currentTime;
+    this.progress = (this.currentTime / video.duration) * 100;
+    this.currentTimeDisplay = this.formatTime(this.currentTime);
+  }
+
+  onMetadataLoaded(): void {
+    const video = this.heroVideo.nativeElement;
+    this.duration = video.duration;
+    this.durationDisplay = this.formatTime(video.duration);
+  }
+
+  seekVideo(event: MouseEvent): void {
+    event.stopPropagation();
+    const video = this.heroVideo.nativeElement;
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const ratio = clickX / rect.width;
+    video.currentTime = ratio * video.duration;
+  }
+
+  private formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
   toggleChat(): void {
     this.chatOpen = !this.chatOpen;
-    // TODO: Émettre un événement ou appeler un service
-    console.log('Chat state:', this.chatOpen);
-  }
-
-  /**
-   * Navigation vers un élément d'accès rapide
-   * TODO: Implémenter la navigation avec Router
-   */
-  navigateToItem(item: QuickAccessItem): void {
-    if (item.route) {
-      // TODO: this.router.navigate([item.route]);
-      console.log('Navigate to:', item.route);
-    }
   }
 }

@@ -19,9 +19,10 @@ export class AdminNavComponent {
 
   navigationLinks: NavigationLink[] = [
     { name: 'Dashboard', route: '/admin', icon: 'house' },
-    { name: 'Ajouter Plat', route: '/admin/add-food', icon: 'plus' },
+    // { name: 'Ajouter Plat', route: '/admin/add-food', icon: 'plus' },
     { name: 'Assigner Plat', route: '/admin/add-food-to-restau', icon: 'utensils' },
     { name: 'Liste des Plats', route: '/admin/liste-food', icon: 'list' },
+    { name: 'Liste des Restaurants', route: '/admin/liste-restaurant', icon: 'list' },
   ];
 
   toggleMobileMenu() {

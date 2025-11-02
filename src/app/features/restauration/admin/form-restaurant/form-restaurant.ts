@@ -1,57 +1,50 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { PlatService } from '../../services/impl/plat.service';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RestaurantService } from '../../services/impl/restaurant.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CustomValidators } from '../../../../core/validators/CustomValidators';
 
 @Component({
-  selector: 'app-form-food-component',
+  selector: 'app-form-restaurant',
   imports: [ReactiveFormsModule, RouterLink, CommonModule],
-  templateUrl: './form-food-component.html',
-  styleUrl: './form-food-component.css',
+  templateUrl: './form-restaurant.html',
+  styleUrl: './form-restaurant.css',
 })
-export class FormFoodComponent implements OnInit {
-  private readonly platService = inject(PlatService);
+export class FormRestaurant implements OnInit {
+  private readonly restaurantService = inject(RestaurantService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 
-  platForm!: FormGroup;
+  restaurantForm!: FormGroup;
   isSubmitting = false;
-
   ngOnInit(): void {
-    this.platForm = this.fb.group({
-      mealName: ['', [Validators.required, Validators.minLength(3), CustomValidators.noNumber]],
-      unitPrice: [
+    this.restaurantForm = this.fb.group({
+      restaurant_name: [
         '',
-        [Validators.required, CustomValidators.integer, CustomValidators.minValue(300)],
+        [Validators.required, Validators.minLength(3), CustomValidators.noNumber],
       ],
-      description: ['', [Validators.required, Validators.minLength(10)]],
+      address: [
+        '',
+        [Validators.required, CustomValidators.noNumber, CustomValidators.noWhitespace],
+      ],
+      contact: ['', [Validators.required, Validators.minLength(9), CustomValidators.phoneNumberSN]],
     });
   }
-
   onSubmit(): void {
-    if (this.platForm.invalid) {
-      this.platForm.markAllAsTouched();
+    if (this.restaurantForm.invalid) {
+      this.restaurantForm.markAllAsTouched();
       return;
     }
 
     this.isSubmitting = true;
 
-    const formValue = {
-      ...this.platForm.value,
-      unitPrice: Number.parseInt(this.platForm.value.unitPrice, 10),
-    };
+    const formValue = this.restaurantForm.value;
 
-    this.platService.createPlats(formValue).subscribe({
+    this.restaurantService.createRestaurant(formValue).subscribe({
       next: () => {
-        this.platForm.reset();
-        this.router.navigate(['/admin/liste-food']);
+        this.restaurantForm.reset();
+        this.router.navigate(['/admin/liste-restaurant']);
       },
       error: (err) => {
         this.isSubmitting = false;
@@ -61,12 +54,12 @@ export class FormFoodComponent implements OnInit {
   }
 
   hasError(fieldName: string): boolean {
-    const field = this.platForm.get(fieldName);
+    const field = this.restaurantForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
   }
 
   getError(fieldName: string): string {
-    const field = this.platForm.get(fieldName);
+    const field = this.restaurantForm.get(fieldName);
     if (!field) return '';
 
     if (field.hasError('required')) return 'Ce champ est requis';

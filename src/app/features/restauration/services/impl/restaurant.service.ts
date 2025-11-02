@@ -1,0 +1,19 @@
+import { Injectable } from '@angular/core';
+import { IRestaurantService } from '../IRestaurantService';
+import { Observable } from 'rxjs';
+import { Restaurant } from '../../model/restaurant.model';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment.development';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class RestaurantService implements IRestaurantService {
+  constructor(private readonly httpClient: HttpClient) {}
+  getRestaurants(): Observable<Restaurant[]> {
+    return this.httpClient.get<Restaurant[]>(`${environment.apiUrl}/restaurants/all`);
+  }
+  createRestaurant(restaurant: Restaurant): Observable<Restaurant> {
+      return this.httpClient.post<Restaurant>(`${environment.apiUrl}/restaurants`, restaurant);
+    }
+}

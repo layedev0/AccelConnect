@@ -12,6 +12,8 @@ import { AdminComponent } from './features/restauration/admin/admin-component';
 import { FormFoodComponent } from './features/restauration/admin/form-food/form-food-component';
 import { AddFoodToRestauComponent } from './features/restauration/admin/add-food-to-restau/add-food-to-restau-component';
 import { ListPlatComponent } from './features/restauration/admin/list-plat/list-plat-component';
+import { ListeRestaurant } from './features/restauration/admin/liste-restaurant/liste-restaurant';
+import { FormRestaurant } from './features/restauration/admin/form-restaurant/form-restaurant';
 
 export const routes: Routes = [
   {
@@ -47,6 +49,8 @@ export const routes: Routes = [
       { path: 'add-food', component: FormFoodComponent },
       { path: 'add-food-to-restau', component: AddFoodToRestauComponent },
       { path: 'liste-food', component: ListPlatComponent },
+      { path: 'liste-restaurant', component: ListeRestaurant },
+      { path: 'add-restaurant', component: FormRestaurant },
     ],
   },
   {

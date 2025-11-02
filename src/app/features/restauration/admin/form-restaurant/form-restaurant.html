@@ -4,7 +4,7 @@
     <div class="mb-6 sm:mb-8">
       <div class="flex items-center gap-2 sm:gap-3 mb-2">
         <button
-          routerLink="/admin/liste-food"
+          routerLink="/admin/liste-restaurant"
           class="p-2 cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,10 +18,10 @@
         </button>
         <div>
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-            Ajouter un nouveau plat
+            Ajouter un nouveau Restaurant
           </h1>
           <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Créez un nouveau plat qui pourra être affecté aux restaurants
+            Créez un nouveau restaurant qui pourra accueillir des plats
           </p>
         </div>
       </div>
@@ -32,7 +32,7 @@
       class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"
     >
       <form
-        [formGroup]="platForm"
+        [formGroup]="restaurantForm"
         (ngSubmit)="onSubmit()"
         class="p-4 sm:p-6 space-y-5 sm:space-y-6"
       >
@@ -42,17 +42,17 @@
             Nom du plat <span class="text-red-500">*</span>
           </label>
           <input
-            formControlName="mealName"
+            formControlName="restaurant_name"
             type="text"
-            id="foodName"
-            placeholder="Ex: Thiébou Dieune, Yassa Poulet..."
+            id="restaurant_name"
+            placeholder="Ex: Eva, Rodra, Joloff..."
             class="w-full px-4 py-3 bg-gray-50 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 transition-all"
             [ngClass]="{
-              'border-red-500 dark:border-red-500': hasError('mealName'),
-              'border-gray-300 dark:border-gray-600': !hasError('mealName')
+              'border-red-500 dark:border-red-500': hasError('restaurant_name'),
+              'border-gray-300 dark:border-gray-600': !hasError('restaurant_name')
             }"
           />
-          @if (hasError('mealName')) {
+          @if (hasError('restaurant_name')) {
           <div class="flex items-start gap-2 mt-1.5">
             <svg
               class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0"
@@ -66,7 +66,7 @@
               />
             </svg>
             <p class="text-xs text-red-600 dark:text-red-400">
-              {{ getError('mealName') }}
+              {{ getError('restaurant_name') }}
             </p>
           </div>
           }
@@ -74,29 +74,25 @@
 
         <div class="border-t border-gray-200 dark:border-gray-700"></div>
 
-        <!-- Prix -->
+        <!-- Addresse -->
         <div class="space-y-2">
-          <label for="foodPrice" class="block text-sm font-semibold text-gray-900 dark:text-white">
-            Prix unitaire <span class="text-red-500">*</span>
+          <label for="Address" class="block text-sm font-semibold text-gray-900 dark:text-white">
+            Addresse <span class="text-red-500">*</span>
           </label>
           <div class="relative">
             <input
-              formControlName="unitPrice"
+              formControlName="address"
               type="text"
-              id="foodPrice"
-              placeholder="2500"
-              inputmode="numeric"
+              id="address"
+              placeholder="Ex: Ngor Virage,Dakar"
               class="w-full px-4 py-3 pr-20 bg-gray-50 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 transition-all"
               [ngClass]="{
-                'border-red-500 dark:border-red-500': hasError('unitPrice'),
-                'border-gray-300 dark:border-gray-600': !hasError('unitPrice')
+                'border-red-500 dark:border-red-500': hasError('address'),
+                'border-gray-300 dark:border-gray-600': !hasError('address')
               }"
             />
-            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-              <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">FCFA</span>
-            </div>
           </div>
-          @if (hasError('unitPrice')) {
+          @if (hasError('address')) {
           <div class="flex items-start gap-2 mt-1.5">
             <svg
               class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0"
@@ -110,45 +106,33 @@
               />
             </svg>
             <p class="text-xs text-red-600 dark:text-red-400">
-              {{ getError('unitPrice') }}
+              {{ getError('address') }}
             </p>
           </div>
           }
-          <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Entrez uniquement des chiffres (ex: 2500, 5000)
-          </p>
         </div>
 
         <div class="border-t border-gray-200 dark:border-gray-700"></div>
 
-        <!-- Description -->
+        <!-- contact -->
         <div class="space-y-2">
-          <label
-            for="foodDescription"
-            class="block text-sm font-semibold text-gray-900 dark:text-white"
-          >
-            Description <span class="text-red-500">*</span>
+          <label for="contact" class="block text-sm font-semibold text-gray-900 dark:text-white">
+            Contact <span class="text-red-500">*</span>
           </label>
-          <textarea
-            id="foodDescription"
-            rows="4"
-            formControlName="description"
-            placeholder="Décrivez le plat, ses ingrédients principaux, son goût..."
-            class="w-full px-4 py-3 bg-gray-50 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 transition-all resize-none"
-            [ngClass]="{
-              'border-red-500 dark:border-red-500': hasError('description'),
-              'border-gray-300 dark:border-gray-600': !hasError('description')
-            }"
-          ></textarea>
-          @if (hasError('description')) {
+          <div class="relative">
+            <input
+              formControlName="contact"
+              type="text"
+              id="contact"
+              placeholder="77 123 45 67"
+              class="w-full px-4 py-3 pr-20 bg-gray-50 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-900 dark:text-white dark:placeholder-gray-500 transition-all"
+              [ngClass]="{
+                'border-red-500 dark:border-red-500': hasError('contact'),
+                'border-gray-300 dark:border-gray-600': !hasError('contact')
+              }"
+            />
+          </div>
+          @if (hasError('contact')) {
           <div class="flex items-start gap-2 mt-1.5">
             <svg
               class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0"
@@ -162,7 +146,7 @@
               />
             </svg>
             <p class="text-xs text-red-600 dark:text-red-400">
-              {{ getError('description') }}
+              {{ getError('contact') }}
             </p>
           </div>
           }
@@ -173,19 +157,19 @@
         <!-- Boutons d'action -->
         <div class="flex flex-col sm:flex-row gap-3 pt-2">
           <button
-            routerLink="/admin/liste-food"
+            routerLink="/admin/liste-restaurant"
             type="button"
             class="flex-1 cursor-pointer px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
           >
             Annuler
           </button>
           <button
-            [disabled]="platForm.invalid || isSubmitting"
+            [disabled]="restaurantForm.invalid || isSubmitting"
             type="submit"
             class="flex-1 cursor-pointer px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             @if (!isSubmitting) {
-            <span>Créer le plat</span>
+            <span>Créer le restaurant</span>
             } @if (isSubmitting) {
             <span class="flex items-center gap-2">
               <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -209,36 +193,6 @@
           </button>
         </div>
       </form>
-    </div>
-
-    <!-- Info box -->
-    <div
-      class="mt-4 sm:mt-6 p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl"
-    >
-      <div class="flex gap-3">
-        <svg
-          class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <div>
-          <h4 class="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-1">
-            Note importante
-          </h4>
-          <p class="text-xs text-blue-700 dark:text-blue-400">
-            Une fois le plat créé, vous pourrez l'affecter à un ou plusieurs restaurants (JOLOF,
-            RODRA, CHEZ EVA) depuis la section "Affecter aux restaurants".
-          </p>
-        </div>
-      </div>
     </div>
   </div>
 </div>

@@ -24,17 +24,14 @@ export class RestaurationComponent implements OnInit {
   private readonly restaurantService = inject(RestaurantService);
   private readonly menuClientService = inject(MenuClientService);
 
-  // Signaux
   restaurants = signal<RestaurantDisplay[]>([]);
   selectedDate = signal<string>(this.getTodayDate());
-  selectedDay = signal<string>(this.getCurrentDayName());
+  selectedDay = signal<string>('');
   isLoading = signal<boolean>(true);
   errorMessage = signal<string>('');
 
-  // Days
   days: string[] = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
 
-  // Stats
   stats: Stat[] = [
     {
       id: 'balance',
@@ -124,6 +121,8 @@ export class RestaurationComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.selectedDay.set(this.getCurrentDayName());
+
     this.loadRestaurantsWithMenus();
   }
 
@@ -135,19 +134,16 @@ export class RestaurationComponent implements OnInit {
     const date = new Date();
     const dayIndex = date.getDay();
 
-    // Convertir en index de notre tableau (Lundi = 0)
-    if (dayIndex === 1 || dayIndex === 6) {
-      // Weekend, retourner Lundi par défaut
+    if (dayIndex === 0 || dayIndex === 6) {
       return 'Lundi';
     }
-    // Retourner le jour correspondant
-    console.log(this.days[dayIndex - 1]);
-    return this.days[dayIndex - 1];
+
+    return this.days[dayIndex - 1] ?? 'Lundi';
   }
 
   isWeekend(date: string): boolean {
     const day = new Date(date).getDay();
-    return day === 0 || day === 6; // 0 = Dimanche, 6 = Samedi
+    return day === 0 || day === 6;
   }
 
   getCurrentWeekendMessage(): { title: string; subtitle: string } {
@@ -236,8 +232,8 @@ export class RestaurationComponent implements OnInit {
 
   getDateForDay(dayIndex: number): string {
     const today = new Date();
-    const currentDay = today.getDay(); // 0 = Dimanche, 1 = Lundi, etc.
-    const diff = dayIndex + 1 - currentDay; // +1 car nos jours commencent à Lundi (0)
+    const currentDay = today.getDay();
+    const diff = dayIndex + 1 - currentDay;
     const targetDate = new Date(today);
     targetDate.setDate(today.getDate() + diff);
     return targetDate.toISOString().split('T')[0];
